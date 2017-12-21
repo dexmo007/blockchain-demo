@@ -1,26 +1,34 @@
 package com.dexmohq.blockchain.controllers;
 
-import com.dexmohq.blockchain.model.Blockchain;
 import com.google.common.hash.Hashing;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/api")
 public class BlockchainController {
 
     @GetMapping(path = "mine")
-    public long mine(@RequestParam("data") String data) {
-        long nonce = 0;
-        String hash = "";
-        while (!hash.startsWith("0000")) {
-            hash = Hashing.sha256().hashString(nonce + data, StandardCharsets.UTF_8).toString();
-            nonce++;
-        }
-        return nonce;
+    public Future<Long> mine(@RequestParam("data") String data) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                //ignore
+            }
+
+            for (long i = -1; i < Long.MAX_VALUE ; i++) {
+                final long nonce = i + 1;
+                final String hash = Hashing.sha256().hashString(Long.toString(nonce) + data, StandardCharsets.UTF_8).toString();
+                if (hash.startsWith("0000")) {
+                    return nonce;
+                }
+            }
+            throw new IllegalStateException("No nonce found");
+        });
     }
 
     @PostMapping(path = "mine")
