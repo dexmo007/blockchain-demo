@@ -9,23 +9,10 @@
 <main role="main" class="container" style="padding: 60px 15px 0;">
   <div class="row">
     <div class="col-md-4">
-      <app-block [index]="1"></app-block>
+      <app-block [index]="1" [(hash)]="hash1" [previousHash]="0"></app-block>
     </div>
     <div class="col-md-4">
-      <app-block [index]="2"></app-block>
-    </div>
-    <div class="col-md-4">
-      <app-block [index]="3"></app-block>
-    </div>
-    <div class="clearfix"></div>
-    <div class="col-md-4">
-      <app-block [index]="4"></app-block>
-    </div>
-    <div class="col-md-4">
-      <app-block [index]="5"></app-block>
-    </div>
-    <div class="col-md-4">
-      <app-block [index]="6"></app-block>
+      <app-block [index]="2" [(hash)]="hash2" [previousHash]="hash1"></app-block>
     </div>
   </div>
 </main>

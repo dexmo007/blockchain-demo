@@ -1,0 +1,29 @@
+# JPA
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blockchain
+    username: blockchain
+    password: blockchain
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  # Thymeleaf
+  thymeleaf:
+      mode: LEGACYHTML5
+
+# JWT
+security:
+  oauth2:
+    resource:
+      filter-order: 3
+
+blockchain:
+  api-resource-id: blockchain-api
+  signing-key: 7821gh978sh1728zw128
+  encoding-strength: 256
+  security-realm: blockchain
+
+# Server
+server:
+  port: 9000
+

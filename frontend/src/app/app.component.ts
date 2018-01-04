@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  hash1: string;
+  hash2: string;
 }

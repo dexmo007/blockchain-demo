@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder encoder;
+
     @Autowired
     private UserRepository userRepository;
 

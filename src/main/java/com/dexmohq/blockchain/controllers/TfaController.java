@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Controller
-@RequestMapping(path = "/2fa")
+//@Controller
+//@RequestMapping(path = "/2fa")
 public class TfaController {
 
     @Autowired
@@ -29,7 +29,7 @@ public class TfaController {
 
     @PostMapping
     public String verify2fa(@RequestParam("code") String code,
-                            @RequestParam(name = "target", required = false) String target) {//todo actual verification
+                            @RequestParam(name = "target", required = false) String target) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final User user = (User) authentication.getPrincipal();
 

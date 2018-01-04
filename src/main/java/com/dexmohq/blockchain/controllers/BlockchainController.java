@@ -1,6 +1,7 @@
 package com.dexmohq.blockchain.controllers;
 
 import com.google.common.hash.Hashing;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
@@ -12,10 +13,11 @@ import java.util.concurrent.Future;
 public class BlockchainController {
 
     @GetMapping(path = "mine")
+    @PreAuthorize("hasAuthority('USER')")
     public Future<Long> mine(@RequestParam("data") String data) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(3000);//todo rm
             } catch (InterruptedException e) {
                 //ignore
             }
