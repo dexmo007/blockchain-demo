@@ -4,16 +4,15 @@
       <img src="../favicon.ico" width="30" height="30" class="d-inline-block align-top" alt="">
       Blockchain Demonstration
     </a>
+
+    <form class="form-inline my-2 my-lg-0">
+      <button class="btn btn-outline-danger my-2 my-sm-0" type="button" routerLink="/logout"
+              *ngIf="auth.isAuthenticated()">Logout
+      </button>
+    </form>
   </nav>
 </header>
 <main role="main" class="container" style="padding: 60px 15px 0;">
-  <div class="row">
-    <div class="col-md-4">
-      <app-block [index]="1" [(hash)]="hash1" [previousHash]="0"></app-block>
-    </div>
-    <div class="col-md-4">
-      <app-block [index]="2" [(hash)]="hash2" [previousHash]="hash1"></app-block>
-    </div>
-  </div>
+  <router-outlet></router-outlet>
 </main>
 

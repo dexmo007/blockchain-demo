@@ -10,7 +10,10 @@ import {HttpClient} from "@angular/common/http";
   templateUrl: './block.component.html',
   styleUrls: ['./block.component.css']
 })
-export class BlockComponent {
+export class BlockComponent implements OnInit {
+  ngOnInit(): void {
+
+  }
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {
   }
@@ -59,6 +62,9 @@ export class BlockComponent {
       .subscribe(res => {
           this.nonce = Number(res);
           this.rehash();
+          this.isMining = false;
+        }, error => {
+          console.log(error);
           this.isMining = false;
         }
       )
