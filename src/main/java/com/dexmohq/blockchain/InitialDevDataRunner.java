@@ -8,18 +8,15 @@ import com.dexmohq.blockchain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
-import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
-import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Component
 public class InitialDevDataRunner implements CommandLineRunner {//todo activate this runner only in dev profile
@@ -46,7 +43,7 @@ public class InitialDevDataRunner implements CommandLineRunner {//todo activate 
         SAMPLE CLIENTS
          */
         JdbcClientDetailsService clientDetailsService = new JdbcClientDetailsService(dataSource);
-        clientDetailsService.setPasswordEncoder(passwordEncoder);
+//        clientDetailsService.setPasswordEncoder(passwordEncoder);
         try {
             clientDetailsService.removeClientDetails("08154711");
         } catch (NoSuchClientException e) {

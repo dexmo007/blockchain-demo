@@ -45,7 +45,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    @Column(name = "PASSWORD", length = 60, nullable = false)
+    @Column(name = "PASSWORD", length = 113, nullable = false)
     public String getPassword() {
         return password;
     }

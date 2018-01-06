@@ -46,7 +46,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
-        configurer.jdbc(dataSource).passwordEncoder(passwordEncoder)
+        configurer.jdbc(dataSource)
+//                .passwordEncoder(passwordEncoder)
 //                .withClient("08154711")
 //                .secret("supersecret")
 //                .authorizedGrantTypes("password")
@@ -73,7 +74,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.passwordEncoder(passwordEncoder);
+//        security.passwordEncoder(passwordEncoder);
     }
 
 }

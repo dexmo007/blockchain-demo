@@ -1,5 +1,7 @@
 package com.dexmohq.blockchain.config;
 
+import com.dexmohq.blockchain.crypto.Aes256BCryptSha512PasswordEncoder;
+import com.dexmohq.blockchain.crypto.JceksKeyProvider;
 import com.dexmohq.blockchain.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final JwtProperties jwtProperties;
+
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService, JwtProperties jwtProperties) {
         this.userDetailsService = userDetailsService;
@@ -72,7 +75,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new Aes256BCryptSha512PasswordEncoder(
+                JceksKeyProvider.builder()
+                        .storePassword("mystorepass")
+                        .keyPassword("mykeypass")
+        );
     }
 
     @Bean

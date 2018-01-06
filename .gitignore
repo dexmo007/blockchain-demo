@@ -53,3 +53,5 @@ frontend/e2e/*.map
 # System Files
 frontend/.DS_Store
 frontend/Thumbs.db
+
+src/main/resources/security/
