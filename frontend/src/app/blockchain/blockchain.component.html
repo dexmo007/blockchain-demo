@@ -1,0 +1,6 @@
+<div class="row">
+  <app-block *ngFor="let block of blocks; let i = index" [index]="i" (hashChange)="blockChanged($event)"
+             [previousHash]="blocks[i].prev"></app-block>
+  <button (click)="addBlock()" class="btn btn-primary">Add block</button>
+</div>
+
