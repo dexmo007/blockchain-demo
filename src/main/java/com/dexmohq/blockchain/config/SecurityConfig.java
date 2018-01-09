@@ -43,30 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-//                .authorizeRequests()
-//                .anyRequest().permitAll()//todo mockup security
-//                .antMatchers("/2fa*").hasAuthority(Role.PRE_2FA.name())
-//                .anyRequest().hasAuthority(Role.USER.name())
-//                .and()
-//                .formLogin().loginPage("/login").successHandler(successHandler()).permitAll()
                 .httpBasic().realmName(jwtProperties.getSecurityRealm())
-//                .and()
-//                .logout()
-//                .permitAll()
-//                .and().exceptionHandling().accessDeniedPage("/unauthorized")
         ;
     }
-
-//    @Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return new TfaAwareAccessDeniedHandler();
-//    }
-
-
-//    @Bean
-//    AuthenticationSuccessHandler successHandler() {
-//        return new TfaSavedRequestAwareAuthenticationSuccessHandler();
-//    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

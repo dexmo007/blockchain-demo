@@ -1,60 +1,73 @@
 package com.dexmohq.blockchain.controllers;
 
+import com.dexmohq.blockchain.config.JwtProperties;
 import com.dexmohq.blockchain.model.User;
 import com.dexmohq.blockchain.model.UserRepository;
 import org.jboss.aerogear.security.otp.Totp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-//@Controller
-//@RequestMapping(path = "/2fa")
+import java.util.Collections;
+
+@RestController
+@RequestMapping(path = "/2fa")
+@PreAuthorize("hasAuthority('PRE_2FA')")
 public class TfaController {
+
+    private static final Logger log = LoggerFactory.getLogger(TfaController.class);
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping
-    public String view2fa(@RequestParam(name = "target", required = false) String targetUrl, Model model) {
-        model.addAttribute("target", targetUrl);
-        return "2fa";
-    }
+//    @Autowired
+//    @Qualifier("tokenServices")
+//    private DefaultTokenServices tokenServices;
+
+    @Autowired
+    private JwtProperties jwtProperties;
+
+    @Autowired
+    private DefaultTokenServices tokenServices;
 
     @PostMapping
-    public String verify2fa(@RequestParam("code") String code,
-                            @RequestParam(name = "target", required = false) String target) {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final User user = (User) authentication.getPrincipal();
-
-        final Totp totp = new Totp(user.getTwoFactorAuthenticationSecret());
+    public OAuth2AccessToken verify2fa(@RequestParam("code") String code,
+                                       OAuth2Authentication authentication) {
+        final String username = (String) authentication.getPrincipal();
+        final User actualUser = userRepository.findByUsername(username);
+        final Totp totp = new Totp(actualUser.getTwoFactorAuthenticationSecret());
         try {
             if (!totp.verify(code)) {
-                return errorResponse(target);
+                throw new BadCredentialsException("");
             }
         } catch (NumberFormatException e) {
-            return errorResponse(target);
+            throw new BadCredentialsException("");
         }
-
-        final User actualUser = userRepository.findOne(user.getUserId());
         final UsernamePasswordAuthenticationToken fullAuthentication =
                 new UsernamePasswordAuthenticationToken(actualUser, null, actualUser.getAuthorities());
         fullAuthentication.setDetails(authentication.getDetails());
-        SecurityContextHolder.getContext().setAuthentication(fullAuthentication);
-        return "redirect:" + (target == null ? "/" : target);
-    }
-
-    private String errorResponse(String target) {
-        if (target == null) {
-            return "redirect:/2fa?error";
-        }
-        return "redirect:/2fa?target=" + target + "&error";
+        final OAuth2Request storedRequest = authentication.getOAuth2Request();
+        final OAuth2Request newRequest = new OAuth2Request(storedRequest.getRequestParameters(), storedRequest.getClientId(),
+                storedRequest.getAuthorities(), true, storedRequest.getScope(),
+                storedRequest.getResourceIds(), null, null, Collections.emptyMap());
+        final OAuth2Authentication oAuth = new OAuth2Authentication(newRequest,
+                fullAuthentication);
+        return tokenServices.createAccessToken(oAuth);
     }
 
 }

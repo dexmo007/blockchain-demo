@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Block} from "../blockchain/blockchain.component";
 
 @Component({
   selector: 'app-home',
@@ -7,10 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  hash1: string;
-  hash2: string;
-
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

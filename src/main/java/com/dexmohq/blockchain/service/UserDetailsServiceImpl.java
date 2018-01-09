@@ -23,9 +23,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("A user with name '" + s + "' does not exist");
         }
-//        if (user.is2faEnabled()) {
-//            user.setAuthorities(Collections.singleton(Role.PRE_2FA));
-//        }
+        if (user.is2faEnabled()) {
+            user.setAuthorities(Collections.singleton(Role.PRE_2FA));
+        }
         return user;
     }
 }

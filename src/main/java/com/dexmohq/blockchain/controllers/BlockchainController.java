@@ -1,7 +1,11 @@
 package com.dexmohq.blockchain.controllers;
 
 import com.google.common.hash.Hashing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
@@ -10,52 +14,34 @@ import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/api")
+@PreAuthorize("hasAuthority('USER')")
 public class BlockchainController {
 
-    @GetMapping(path = "mine")
-    @PreAuthorize("hasAuthority('USER')")
-    public Future<Long> mine(@RequestParam("data") String data) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                Thread.sleep(3000);//todo rm
-            } catch (InterruptedException e) {
-                //ignore
-            }
+    private static final Logger log = LoggerFactory.getLogger(BlockchainController.class);
 
-            for (long i = -1; i < Long.MAX_VALUE ; i++) {
-                final long nonce = i + 1;
-                final String hash = Hashing.sha256().hashString(Long.toString(nonce) + data, StandardCharsets.UTF_8).toString();
-                if (hash.startsWith("0000")) {
-                    return nonce;
-                }
-            }
-            throw new IllegalStateException("No nonce found");
-        });
+    @GetMapping(path = "mine")
+    public Future<Nonce> mineGet(@RequestParam("data") String data) {
+        return CompletableFuture.supplyAsync(() -> new Nonce(doMining(data)));
     }
 
     @PostMapping(path = "mine")
-    public BlockDto mineBlock(@RequestBody BlockDto block) {
-        long nonce = 0;
-        String hash = "";
-        while (!hash.startsWith("0000")) {
-            hash = Hashing.sha256().hashString(nonce + block.data, StandardCharsets.UTF_8).toString();
-            nonce++;
-        }
-        block.nonce = nonce;
-        return block;
+    public Future<Nonce> minePost(@RequestBody Data data) {
+        return CompletableFuture.supplyAsync(() -> new Nonce(doMining(data.getData())));
     }
 
-    public static class BlockDto {
-        private long nonce;
+    private long doMining(String data) {
+        for (long i = -1; i < Long.MAX_VALUE; i++) {
+            final long nonce = i + 1;
+            final String hash = Hashing.sha256().hashString(Long.toString(nonce) + data, StandardCharsets.UTF_8).toString();
+            if (hash.startsWith("0000")) {
+                return nonce;
+            }
+        }
+        throw new IllegalStateException("No nonce found");
+    }
+
+    static class Data {
         private String data;
-
-        public long getNonce() {
-            return nonce;
-        }
-
-        public void setNonce(long nonce) {
-            this.nonce = nonce;
-        }
 
         public String getData() {
             return data;
@@ -64,14 +50,19 @@ public class BlockchainController {
         public void setData(String data) {
             this.data = data;
         }
+    }
 
-        @Override
-        public String toString() {
-            return "BlockDto{" +
-                    "nonce=" + nonce +
-                    ", data='" + data + '\'' +
-                    '}';
+    static class Nonce {
+        private final long nonce;
+
+        public Nonce(long nonce) {
+            this.nonce = nonce;
         }
+
+        public long getNonce() {
+            return nonce;
+        }
+
     }
 
 }

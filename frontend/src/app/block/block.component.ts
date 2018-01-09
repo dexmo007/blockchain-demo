@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import * as shajs from 'sha.js';
 import {HttpClient} from "@angular/common/http";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-block',
@@ -12,10 +13,9 @@ import {HttpClient} from "@angular/common/http";
 })
 export class BlockComponent implements OnInit {
   ngOnInit(): void {
-
   }
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private auth: AuthService) {
   }
 
   @Input() index: number;
@@ -46,21 +46,21 @@ export class BlockComponent implements OnInit {
     return this._hash;
   }
 
-  @Output() hashChange: EventEmitter<string> = new EventEmitter();
+  @Output() hashChange: EventEmitter<{hash: string, index: number}> = new EventEmitter();
 
   set hash(value: string) {
     if (value === undefined) {
       return;
     }
     this._hash = value;
-    this.hashChange.emit(this._hash);
+    this.hashChange.emit({index: this.index, hash: this._hash});
   }
 
   mine() {
     this.isMining = true;
     this.http.get('/api/mine?data=' + this.data + this._previousHash)
-      .subscribe(res => {
-          this.nonce = Number(res);
+      .subscribe((res: {nonce: number}) => {
+          this.nonce = res.nonce;
           this.rehash();
           this.isMining = false;
         }, error => {
