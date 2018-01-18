@@ -6,6 +6,9 @@ import 'rxjs/add/operator/map'
 import {Observable} from "rxjs/Observable";
 
 export const tokenName = 'access_token';
+export function retrieveToken(): string {
+  return localStorage.getItem(tokenName);
+}
 
 export interface JwtToken {
   access_token: string;
@@ -36,7 +39,7 @@ export class AuthService {
     const fromStorage = localStorage.getItem(tokenName);
     if (fromStorage != null) {
       this.tokenData = AuthService.decode(fromStorage);
-      if (this.isExpired() || true) {
+      if (this.isExpired()) {
         this.loginModalActive = true;
         this.logout();
         // redirect is sub-optimal

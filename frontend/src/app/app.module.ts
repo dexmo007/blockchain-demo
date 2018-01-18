@@ -1,6 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import {AngularFontAwesomeModule} from 'angular-font-awesome';
 
 import {AppComponent} from './app.component';
 import {BlockComponent} from './block/block.component';
@@ -12,7 +13,7 @@ import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {RouterModule, Routes} from "@angular/router";
 import {AuthGuard} from "./auth.guard";
-import {AuthService, LoginModalComponent} from "./auth.service";
+import {AuthService, LoginModalComponent, retrieveToken} from "./auth.service";
 import {BlockchainComponent} from './blockchain/blockchain.component';
 
 export const routes: Routes = [
@@ -35,7 +36,7 @@ export const routes: Routes = [
     BrowserModule, NgbModule.forRoot(), HttpClientModule, FormsModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: () => localStorage.getItem('access_token'),
+        tokenGetter: retrieveToken,
         skipWhenExpired: true,
         whitelistedDomains: ['localhost:9000']
       }

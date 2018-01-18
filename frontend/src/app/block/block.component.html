@@ -6,8 +6,8 @@
 
     <form>
       <div class="form-group row">
-        <label for="block-nonce" class="col-sm-2 col-form-label">Nonce</label>
-        <div class="col-sm-10">
+        <label for="block-nonce" class="col-sm-3 col-form-label">Nonce</label>
+        <div class="col-sm-9">
           <input [(ngModel)]="nonce" (ngModelChange)="rehash()" name="nonce" type="text" digitsOnly
                  class="form-control"
                  id="block-nonce"
@@ -15,33 +15,30 @@
         </div>
       </div>
       <div class="form-group row">
-        <label for="block-data" class="col-sm-2 col-form-label">Data</label>
-        <div class="col-sm-10">
+        <label for="block-data" class="col-sm-3 col-form-label">Data</label>
+        <div class="col-sm-9">
           <input [(ngModel)]="data" (ngModelChange)="rehash()" name="data" type="text" class="form-control"
                  id="block-data" placeholder="Enter some arbitrary data">
         </div>
       </div>
       <div class="form-group row">
-        <label for="block-hash" class="col-sm-2 col-form-label">Hash</label>
-        <div class="col-sm-10">
-          <input type="text" readonly class="form-control-plaintext" id="block-hash" value="{{hash}}">
+        <label for="block-hash" class="col-sm-3 col-form-label">Hash</label>
+        <div class="col-sm-9">
+          <input type="text" disabled class="form-control" id="block-hash" value="{{hash}}">
         </div>
       </div>
       <div class="form-group row">
-        <label for="block-prev-hash" class="col-sm-2 col-form-label">Previous</label>
-        <div class="col-sm-10">
-          <input type="text" readonly class="form-control-plaintext" id="block-prev-hash" value="{{previousHash}}">
+        <label for="block-prev-hash" class="col-sm-3 col-form-label text-nowrap">Previous</label>
+        <div class="col-sm-9">
+          <input type="text" disabled class="form-control" id="block-prev-hash" value="{{previousHash}}">
         </div>
       </div>
     </form>
-    <div>
-      <button type="button" class="btn btn-primary" (click)="mine()" [disabled]="isValid()" *ngIf="!isMining">
+    <div class="row justify-content-center">
+      <button type="button" class="btn btn-primary" (click)="mine()" [disabled]="isValid()">
+        <i class="fa fa-cog fa-spin" *ngIf="isMining"></i>
         {{isMining ? 'Mining...' : 'Mine'}}
       </button>
-      <div class="progress" *ngIf="isMining">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100"
-             aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-      </div>
     </div>
 
   </div>
