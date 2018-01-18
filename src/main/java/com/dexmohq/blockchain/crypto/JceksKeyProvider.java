@@ -18,7 +18,6 @@ public class JceksKeyProvider implements KeyProvider {
     private String keyPassword = null;
 
     private JceksKeyProvider() {
-
     }
 
     public static JceksKeyProvider builder() {

@@ -55,3 +55,6 @@ frontend/.DS_Store
 frontend/Thumbs.db
 
 src/main/resources/security/
+
+# output of webpacked frontend
+src/main/resources/static/
